@@ -1,6 +1,6 @@
-package payments.application.repositories;
+package payments.application.repository;
 
-import payments.domain.entities.PaymentError;
+import payments.domain.entity.PaymentError;
 
 public interface PaymentErrorLogRepository {
     // to store error logs

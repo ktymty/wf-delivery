@@ -1,4 +1,4 @@
-package payments.domain.entities;
+package payments.domain.entity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static payments.domain.vo.PaymentType.OFFLINE;
 
-@DisplayName("Account Test")
+@DisplayName("Account")
 class AccountTest {
 
     @BeforeEach

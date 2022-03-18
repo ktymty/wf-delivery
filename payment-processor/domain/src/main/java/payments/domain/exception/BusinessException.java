@@ -1,4 +1,4 @@
-package payments.domain.exceptions;
+package payments.domain.exception;
 
 public class BusinessException extends RuntimeException {
 
