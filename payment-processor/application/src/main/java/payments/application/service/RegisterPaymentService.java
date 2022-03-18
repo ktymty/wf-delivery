@@ -22,7 +22,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RegisterPaymentService implements RegisterPayment{
+public class RegisterPaymentService implements RegisterPayment {
     @NonNull
     private final PaymentRepository paymentRepository;
     @NonNull
@@ -56,7 +56,7 @@ public class RegisterPaymentService implements RegisterPayment{
     @Override
     public void validateAndRegisterOnlinePayment(Payment payment) {
         try {
-            if(!paymentRepository.exists(payment.getPaymentId())) {
+            if (!paymentRepository.exists(payment.getPaymentId())) {
                 saveIfValidPayment(payment);
             } else {
                 log.info("Payment {} already exists", payment.getPaymentId());
@@ -84,7 +84,7 @@ public class RegisterPaymentService implements RegisterPayment{
     }
 
     private void saveIfValidPayment(Payment payment) {
-        if(paymentGatewayClient.isPaymentValid(payment)) {
+        if (paymentGatewayClient.isPaymentValid(payment)) {
             savePayment(payment);
         } else {
             throw new InvalidPaymentException(payment.getPaymentId());

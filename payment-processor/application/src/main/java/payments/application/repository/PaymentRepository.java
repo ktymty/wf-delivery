@@ -5,5 +5,6 @@ import payments.domain.vo.PaymentId;
 
 public interface PaymentRepository {
     boolean exists(PaymentId paymentId);
+
     void save(Payment payment);
 }
