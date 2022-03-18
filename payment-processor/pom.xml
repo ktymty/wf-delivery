@@ -24,7 +24,7 @@
     <!-- hexagonal architecture design with help of multi-module pom-->
     <modules>
         <module>domain</module>
-        <module>domain</module>
+        <module>application</module>
     </modules>
 
 </project>
