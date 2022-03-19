@@ -1,4 +1,4 @@
-package payments.domain.entities;
+package payments.domain.entity;
 
 import lombok.Getter;
 import lombok.Builder;

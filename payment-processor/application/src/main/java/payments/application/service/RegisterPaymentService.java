@@ -1,20 +1,20 @@
-package payments.application.services;
+package payments.application.service;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import payments.application.repositories.AccountRepository;
-import payments.application.repositories.PaymentErrorLogRepository;
 import payments.application.client.PaymentGatewayClient;
-import payments.application.repositories.PaymentRepository;
-import payments.domain.entities.Account;
-import payments.domain.entities.Payment;
-import payments.domain.entities.PaymentError;
-import payments.domain.exceptions.AccountNotFoundException;
-import payments.domain.exceptions.InvalidPaymentException;
-import payments.domain.exceptions.PaymentException;
+import payments.application.repository.AccountRepository;
+import payments.application.repository.PaymentErrorLogRepository;
+import payments.application.repository.PaymentRepository;
+import payments.domain.entity.Account;
+import payments.domain.entity.Payment;
+import payments.domain.entity.PaymentError;
+import payments.domain.exception.AccountNotFoundException;
+import payments.domain.exception.InvalidPaymentException;
+import payments.domain.exception.PaymentException;
 import payments.domain.vo.ErrorType;
 
 import java.util.Objects;
@@ -22,7 +22,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RegisterPaymentService implements RegisterPayment{
+public class RegisterPaymentService implements RegisterPayment {
     @NonNull
     private final PaymentRepository paymentRepository;
     @NonNull
@@ -34,7 +34,7 @@ public class RegisterPaymentService implements RegisterPayment{
 
     @Transactional
     @Override
-    public void registerPayment(Payment payment) {
+    public void registerOfflinePayment(Payment payment) {
         try {
             if (!paymentRepository.exists(payment.getPaymentId())) {
                 savePayment(payment);
@@ -54,9 +54,9 @@ public class RegisterPaymentService implements RegisterPayment{
 
     @Transactional
     @Override
-    public void validateAndRegisterPayment(Payment payment) {
+    public void validateAndRegisterOnlinePayment(Payment payment) {
         try {
-            if(!paymentRepository.exists(payment.getPaymentId())) {
+            if (!paymentRepository.exists(payment.getPaymentId())) {
                 saveIfValidPayment(payment);
             } else {
                 log.info("Payment {} already exists", payment.getPaymentId());
@@ -84,7 +84,7 @@ public class RegisterPaymentService implements RegisterPayment{
     }
 
     private void saveIfValidPayment(Payment payment) {
-        if(paymentGatewayClient.isPaymentValid(payment)) {
+        if (paymentGatewayClient.isPaymentValid(payment)) {
             savePayment(payment);
         } else {
             throw new InvalidPaymentException(payment.getPaymentId());

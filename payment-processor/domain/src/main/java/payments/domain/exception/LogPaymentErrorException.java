@@ -1,4 +1,4 @@
-package payments.domain.exceptions;
+package payments.domain.exception;
 
 import payments.domain.vo.PaymentId;
 

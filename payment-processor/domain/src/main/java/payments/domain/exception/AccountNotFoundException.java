@@ -1,7 +1,7 @@
-package payments.domain.exceptions;
+package payments.domain.exception;
 
 import lombok.NonNull;
-import payments.domain.entities.PaymentError;
+import payments.domain.entity.PaymentError;
 import payments.domain.vo.AccountId;
 import payments.domain.vo.ErrorType;
 import payments.domain.vo.PaymentId;
