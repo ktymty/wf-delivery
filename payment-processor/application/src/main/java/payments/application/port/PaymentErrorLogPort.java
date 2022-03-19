@@ -1,8 +1,8 @@
 package payments.application.port;
 
-import payments.domain.entity.PaymentError;
+import payments.domain.model.PaymentError;
 
 public interface PaymentErrorLogPort {
     // to store error logs
-    void save(PaymentError error);
+    void savePaymentError(PaymentError error);
 }

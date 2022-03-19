@@ -1,6 +1,6 @@
 package payments.application.usecase;
 
-import payments.domain.entity.Payment;
+import payments.domain.model.Payment;
 
 public interface RegisterPaymentUseCase {
     // register validated payments (offline, crm, shopping)

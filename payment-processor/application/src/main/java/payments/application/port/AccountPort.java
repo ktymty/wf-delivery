@@ -1,10 +1,10 @@
 package payments.application.port;
 
-import payments.domain.entity.Account;
-import payments.domain.model.AccountId;
+import payments.domain.model.Account;
+import payments.domain.vo.AccountId;
 
 public interface AccountPort {
-    Account fetch(AccountId accountId);
+    Account findByAccountId(AccountId accountId);
 
-    void update(Account account);
+    void updateAccount(Account account);
 }

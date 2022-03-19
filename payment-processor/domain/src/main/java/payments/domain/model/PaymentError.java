@@ -1,12 +1,12 @@
-package payments.domain.entity;
+package payments.domain.model;
 
 import lombok.Getter;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
-import payments.domain.model.ErrorType;
-import payments.domain.model.PaymentId;
+import payments.domain.vo.ErrorType;
+import payments.domain.vo.PaymentId;
 
 @Getter
 @Builder

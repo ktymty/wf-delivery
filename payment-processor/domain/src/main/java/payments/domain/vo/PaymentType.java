@@ -1,15 +1,15 @@
-package payments.domain.model;
+package payments.domain.vo;
 
 import lombok.NonNull;
 
 import java.util.stream.Stream;
 
-public enum ErrorType {
-    DATABASE, NETWORK, OTHER;
+public enum PaymentType {
+    ONLINE, OFFLINE;
 
-    public static ErrorType of(@NonNull String type) {
+    public static PaymentType of(@NonNull String type) {
         return Stream.of(values())
-                .filter(errorType -> errorType.name().equalsIgnoreCase(type))
+                .filter(paymentType -> paymentType.name().equalsIgnoreCase(type))
                 .findFirst()
                 .orElseThrow();
     }

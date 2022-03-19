@@ -1,4 +1,4 @@
-package payments.domain.model;
+package payments.domain.vo;
 
 import lombok.NonNull;
 import lombok.Value;

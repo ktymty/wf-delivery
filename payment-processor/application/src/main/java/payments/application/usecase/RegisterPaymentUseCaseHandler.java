@@ -9,13 +9,13 @@ import payments.application.port.PaymentGatewayPort;
 import payments.application.port.AccountPort;
 import payments.application.port.PaymentErrorLogPort;
 import payments.application.port.PaymentPort;
-import payments.domain.entity.Account;
-import payments.domain.entity.Payment;
-import payments.domain.entity.PaymentError;
+import payments.domain.model.Account;
+import payments.domain.model.Payment;
+import payments.domain.model.PaymentError;
 import payments.domain.exception.AccountNotFoundException;
 import payments.domain.exception.InvalidPaymentException;
 import payments.domain.exception.PaymentException;
-import payments.domain.model.ErrorType;
+import payments.domain.vo.ErrorType;
 
 import java.util.Objects;
 
@@ -42,9 +42,9 @@ public class RegisterPaymentUseCaseHandler implements RegisterPaymentUseCase {
                 log.info("Payment {} already exists", payment.getPaymentId());
             }
         } catch (PaymentException pe) {
-            paymentErrorLogPort.save(pe.toError());
+            paymentErrorLogPort.savePaymentError(pe.toError());
         } catch (Exception ex) {
-            paymentErrorLogPort.save(PaymentError.builder()
+            paymentErrorLogPort.savePaymentError(PaymentError.builder()
                     .paymentId(payment.getPaymentId())
                     .error(ErrorType.OTHER)
                     .description(ex.getMessage())
@@ -62,9 +62,9 @@ public class RegisterPaymentUseCaseHandler implements RegisterPaymentUseCase {
                 log.info("Payment {} already exists", payment.getPaymentId());
             }
         } catch (PaymentException pe) {
-            paymentErrorLogPort.save(pe.toError());
+            paymentErrorLogPort.savePaymentError(pe.toError());
         } catch (Exception ex) {
-            paymentErrorLogPort.save(PaymentError.builder()
+            paymentErrorLogPort.savePaymentError(PaymentError.builder()
                     .paymentId(payment.getPaymentId())
                     .error(ErrorType.OTHER)
                     .description(ex.getMessage())
@@ -73,14 +73,14 @@ public class RegisterPaymentUseCaseHandler implements RegisterPaymentUseCase {
     }
 
     private void savePayment(Payment payment) {
-        Account account = accountPort.fetch(payment.getAccountId());
+        Account account = accountPort.findByAccountId(payment.getAccountId());
         if (Objects.isNull(account)) {
             throw new AccountNotFoundException(payment.getPaymentId(), payment.getAccountId());
         }
-        paymentPort.save(payment);
+        paymentPort.savePayment(payment);
 
         account.addPayment(payment);
-        accountPort.update(account);
+        accountPort.updateAccount(account);
     }
 
     private void saveIfValidPayment(Payment payment) {

@@ -1,6 +1,6 @@
 package payments.domain.exception;
 
-import payments.domain.entity.PaymentError;
+import payments.domain.model.PaymentError;
 
 public abstract class PaymentException extends BusinessException {
 

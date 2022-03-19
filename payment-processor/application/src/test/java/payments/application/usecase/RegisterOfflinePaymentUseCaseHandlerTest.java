@@ -6,12 +6,12 @@ import payments.application.port.PaymentGatewayPort;
 import payments.application.port.AccountPort;
 import payments.application.port.PaymentErrorLogPort;
 import payments.application.port.PaymentPort;
-import payments.domain.entity.Account;
-import payments.domain.entity.Payment;
-import payments.domain.entity.PaymentError;
+import payments.domain.model.Account;
+import payments.domain.model.Payment;
+import payments.domain.model.PaymentError;
 import payments.domain.exception.AccountNotFoundException;
-import payments.domain.model.AccountId;
-import payments.domain.model.PaymentId;
+import payments.domain.vo.AccountId;
+import payments.domain.vo.PaymentId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,8 +21,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static payments.domain.model.ErrorType.OTHER;
-import static payments.domain.model.PaymentType.OFFLINE;
+import static payments.domain.vo.ErrorType.OTHER;
+import static payments.domain.vo.PaymentType.OFFLINE;
 
 @DisplayName("Register Offline Payment Use Case Handler Test")
 class RegisterOfflinePaymentUseCaseHandlerTest {
@@ -55,9 +55,9 @@ class RegisterOfflinePaymentUseCaseHandlerTest {
         serviceUnderTest.registerOfflinePayment(payment);
 
         // then
-        verify(mockAccountPort, never()).update(any());
-        verify(mockPaymentPort, never()).save(payment);
-        verify(mockPaymentErrorLogPort, never()).save(any());
+        verify(mockAccountPort, never()).updateAccount(any());
+        verify(mockPaymentPort, never()).savePayment(payment);
+        verify(mockPaymentErrorLogPort, never()).savePaymentError(any());
     }
 
     @Test
@@ -78,15 +78,15 @@ class RegisterOfflinePaymentUseCaseHandlerTest {
                 mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
         when(mockPaymentPort.exists(paymentId)).thenReturn(false);
-        when(mockAccountPort.fetch(accountId)).thenReturn(null);
+        when(mockAccountPort.findByAccountId(accountId)).thenReturn(null);
 
         // when
         serviceUnderTest.registerOfflinePayment(payment);
 
         // then
-        verify(mockAccountPort, never()).update(any());
-        verify(mockPaymentPort, never()).save(payment);
-        verify(mockPaymentErrorLogPort).save(new AccountNotFoundException(paymentId, accountId).toError());
+        verify(mockAccountPort, never()).updateAccount(any());
+        verify(mockPaymentPort, never()).savePayment(payment);
+        verify(mockPaymentErrorLogPort).savePaymentError(new AccountNotFoundException(paymentId, accountId).toError());
     }
 
     @Test
@@ -107,15 +107,15 @@ class RegisterOfflinePaymentUseCaseHandlerTest {
                 mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
         when(mockPaymentPort.exists(paymentId)).thenReturn(false);
-        when(mockAccountPort.fetch(accountId)).thenThrow(new RuntimeException("Some Error"));
+        when(mockAccountPort.findByAccountId(accountId)).thenThrow(new RuntimeException("Some Error"));
 
         // when
         serviceUnderTest.registerOfflinePayment(payment);
 
         // then
-        verify(mockAccountPort, never()).update(any());
-        verify(mockPaymentPort, never()).save(payment);
-        verify(mockPaymentErrorLogPort).save(PaymentError.builder()
+        verify(mockAccountPort, never()).updateAccount(any());
+        verify(mockPaymentPort, never()).savePayment(payment);
+        verify(mockPaymentErrorLogPort).savePaymentError(PaymentError.builder()
                 .paymentId(paymentId)
                 .error(OTHER)
                 .description("Some Error")
@@ -146,15 +146,15 @@ class RegisterOfflinePaymentUseCaseHandlerTest {
                 mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
         when(mockPaymentPort.exists(paymentId)).thenReturn(false);
-        when(mockAccountPort.fetch(accountId)).thenReturn(account);
+        when(mockAccountPort.findByAccountId(accountId)).thenReturn(account);
 
         // when
         serviceUnderTest.registerOfflinePayment(payment);
 
         // then
         assertEquals(paymentCreatedOn, account.getLastPaymentDate());
-        verify(mockAccountPort).update(account);
-        verify(mockPaymentPort).save(payment);
-        verify(mockPaymentErrorLogPort, never()).save(any());
+        verify(mockAccountPort).updateAccount(account);
+        verify(mockPaymentPort).savePayment(payment);
+        verify(mockPaymentErrorLogPort, never()).savePaymentError(any());
     }
 }

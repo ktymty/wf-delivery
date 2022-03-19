@@ -1,8 +1,8 @@
 package payments.application.port;
 
-import payments.domain.entity.Payment;
+import payments.domain.model.Payment;
 
 public interface PaymentGatewayPort {
-    // to validate with payment gateways - visa, paypal, stripe
+    // to validate with external payment gateways - visa, paypal, stripe
     boolean isPaymentValid(Payment payment);
 }
