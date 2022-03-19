@@ -1,6 +1,6 @@
 package payments.domain.exception;
 
-import payments.domain.vo.PaymentId;
+import payments.domain.model.PaymentId;
 
 public class LogPaymentErrorException extends RuntimeException {
 

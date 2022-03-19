@@ -2,8 +2,8 @@ package payments.domain.exception;
 
 import lombok.NonNull;
 import payments.domain.entity.PaymentError;
-import payments.domain.vo.ErrorType;
-import payments.domain.vo.PaymentId;
+import payments.domain.model.ErrorType;
+import payments.domain.model.PaymentId;
 
 public class InvalidPaymentException extends PaymentException {
 

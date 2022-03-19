@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import payments.domain.vo.AccountId;
-import payments.domain.vo.PaymentId;
+import payments.domain.model.AccountId;
+import payments.domain.model.PaymentId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,18 +13,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static payments.domain.vo.PaymentType.OFFLINE;
+import static payments.domain.model.PaymentType.OFFLINE;
 
 @DisplayName("Account")
 class AccountTest {
-
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
 
     @Test
     @DisplayName("should update last payment date when payment is added to account.")

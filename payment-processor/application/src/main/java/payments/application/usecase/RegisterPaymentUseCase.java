@@ -1,8 +1,8 @@
-package payments.application.service;
+package payments.application.usecase;
 
 import payments.domain.entity.Payment;
 
-public interface RegisterPayment {
+public interface RegisterPaymentUseCase {
     // register validated payments (offline, crm, shopping)
     void registerOfflinePayment(Payment payment);
 
