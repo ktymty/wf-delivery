@@ -1,8 +1,8 @@
-package payments.application.repository;
+package payments.application.port;
 
 import payments.domain.entity.PaymentError;
 
-public interface PaymentErrorLogRepository {
+public interface PaymentErrorLogPort {
     // to store error logs
     void save(PaymentError error);
 }

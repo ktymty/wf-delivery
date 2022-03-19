@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
-import payments.domain.vo.ErrorType;
-import payments.domain.vo.PaymentId;
+import payments.domain.model.ErrorType;
+import payments.domain.model.PaymentId;
 
 @Getter
 @Builder

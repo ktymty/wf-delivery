@@ -1,18 +1,18 @@
-package payments.application.service;
+package payments.application.usecase;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import payments.application.client.PaymentGatewayClient;
-import payments.application.repository.AccountRepository;
-import payments.application.repository.PaymentErrorLogRepository;
-import payments.application.repository.PaymentRepository;
+import payments.application.port.PaymentGatewayPort;
+import payments.application.port.AccountPort;
+import payments.application.port.PaymentErrorLogPort;
+import payments.application.port.PaymentPort;
 import payments.domain.entity.Account;
 import payments.domain.entity.Payment;
 import payments.domain.entity.PaymentError;
 import payments.domain.exception.AccountNotFoundException;
 import payments.domain.exception.InvalidPaymentException;
-import payments.domain.vo.AccountId;
-import payments.domain.vo.PaymentId;
+import payments.domain.model.AccountId;
+import payments.domain.model.PaymentId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,16 +22,16 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static payments.domain.vo.ErrorType.OTHER;
-import static payments.domain.vo.PaymentType.ONLINE;
+import static payments.domain.model.ErrorType.OTHER;
+import static payments.domain.model.PaymentType.ONLINE;
 
-@DisplayName("Register Online Payment Service Test")
-class RegisterOnlinePaymentServiceTest {
+@DisplayName("Register Online Payment Use Case Handler Test")
+class RegisterOnlinePaymentUseCaseHandlerTest {
 
-    private final PaymentRepository mockPaymentRepository = mock(PaymentRepository.class);
-    private final AccountRepository mockAccountRepository = mock(AccountRepository.class);
-    private final PaymentGatewayClient mockPaymentGatewayClient = mock(PaymentGatewayClient.class);
-    private final PaymentErrorLogRepository mockPaymentErrorLogRepository = mock(PaymentErrorLogRepository.class);
+    private final PaymentPort mockPaymentPort = mock(PaymentPort.class);
+    private final AccountPort mockAccountPort = mock(AccountPort.class);
+    private final PaymentGatewayPort mockPaymentGatewayPort = mock(PaymentGatewayPort.class);
+    private final PaymentErrorLogPort mockPaymentErrorLogPort = mock(PaymentErrorLogPort.class);
 
     @Test
     @DisplayName("should validate and register online payment when paymentId exists.")
@@ -47,18 +47,18 @@ class RegisterOnlinePaymentServiceTest {
                 .amount(BigDecimal.TEN)
                 .createdOn(paymentCreatedOn)
                 .build();
-        RegisterPaymentService serviceUnderTest = new RegisterPaymentService(mockPaymentRepository, mockAccountRepository,
-                mockPaymentGatewayClient, mockPaymentErrorLogRepository);
+        RegisterPaymentUseCaseHandler serviceUnderTest = new RegisterPaymentUseCaseHandler(mockPaymentPort, mockAccountPort,
+                mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
-        when(mockPaymentRepository.exists(paymentId)).thenReturn(true);
+        when(mockPaymentPort.exists(paymentId)).thenReturn(true);
 
         // when
         serviceUnderTest.validateAndRegisterOnlinePayment(payment);
 
         // then
-        verify(mockAccountRepository, never()).update(any());
-        verify(mockPaymentRepository, never()).save(payment);
-        verify(mockPaymentErrorLogRepository, never()).save(any());
+        verify(mockAccountPort, never()).update(any());
+        verify(mockPaymentPort, never()).save(payment);
+        verify(mockPaymentErrorLogPort, never()).save(any());
     }
 
     @Test
@@ -76,20 +76,20 @@ class RegisterOnlinePaymentServiceTest {
                 .amount(BigDecimal.TEN)
                 .createdOn(paymentCreatedOn)
                 .build();
-        RegisterPaymentService serviceUnderTest = new RegisterPaymentService(mockPaymentRepository, mockAccountRepository,
-                mockPaymentGatewayClient, mockPaymentErrorLogRepository);
+        RegisterPaymentUseCaseHandler serviceUnderTest = new RegisterPaymentUseCaseHandler(mockPaymentPort, mockAccountPort,
+                mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
-        when(mockPaymentRepository.exists(paymentId)).thenReturn(false);
-        when(mockPaymentGatewayClient.isPaymentValid(payment)).thenReturn(true);
-        when(mockAccountRepository.fetch(accountId)).thenReturn(null);
+        when(mockPaymentPort.exists(paymentId)).thenReturn(false);
+        when(mockPaymentGatewayPort.isPaymentValid(payment)).thenReturn(true);
+        when(mockAccountPort.fetch(accountId)).thenReturn(null);
 
         // when
         serviceUnderTest.validateAndRegisterOnlinePayment(payment);
 
         // then
-        verify(mockAccountRepository, never()).update(any());
-        verify(mockPaymentRepository, never()).save(payment);
-        verify(mockPaymentErrorLogRepository).save(new AccountNotFoundException(paymentId, accountId).toError());
+        verify(mockAccountPort, never()).update(any());
+        verify(mockPaymentPort, never()).save(payment);
+        verify(mockPaymentErrorLogPort).save(new AccountNotFoundException(paymentId, accountId).toError());
     }
 
     @Test
@@ -107,19 +107,19 @@ class RegisterOnlinePaymentServiceTest {
                 .amount(BigDecimal.TEN)
                 .createdOn(paymentCreatedOn)
                 .build();
-        RegisterPaymentService serviceUnderTest = new RegisterPaymentService(mockPaymentRepository, mockAccountRepository,
-                mockPaymentGatewayClient, mockPaymentErrorLogRepository);
+        RegisterPaymentUseCaseHandler serviceUnderTest = new RegisterPaymentUseCaseHandler(mockPaymentPort, mockAccountPort,
+                mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
-        when(mockPaymentRepository.exists(paymentId)).thenReturn(false);
-        when(mockPaymentGatewayClient.isPaymentValid(payment)).thenReturn(false);
+        when(mockPaymentPort.exists(paymentId)).thenReturn(false);
+        when(mockPaymentGatewayPort.isPaymentValid(payment)).thenReturn(false);
 
         // when
         serviceUnderTest.validateAndRegisterOnlinePayment(payment);
 
         // then
-        verify(mockAccountRepository, never()).update(any());
-        verify(mockPaymentRepository, never()).save(payment);
-        verify(mockPaymentErrorLogRepository).save(new InvalidPaymentException(paymentId).toError());
+        verify(mockAccountPort, never()).update(any());
+        verify(mockPaymentPort, never()).save(payment);
+        verify(mockPaymentErrorLogPort).save(new InvalidPaymentException(paymentId).toError());
     }
 
     @Test
@@ -143,21 +143,21 @@ class RegisterOnlinePaymentServiceTest {
                 .email("mail@wf.com")
                 .birthdate(LocalDate.of(2000, 1, 1))
                 .build();
-        RegisterPaymentService serviceUnderTest = new RegisterPaymentService(mockPaymentRepository, mockAccountRepository,
-                mockPaymentGatewayClient, mockPaymentErrorLogRepository);
+        RegisterPaymentUseCaseHandler serviceUnderTest = new RegisterPaymentUseCaseHandler(mockPaymentPort, mockAccountPort,
+                mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
-        when(mockPaymentRepository.exists(paymentId)).thenReturn(false);
-        when(mockPaymentGatewayClient.isPaymentValid(payment)).thenReturn(true);
-        when(mockAccountRepository.fetch(accountId)).thenReturn(account);
+        when(mockPaymentPort.exists(paymentId)).thenReturn(false);
+        when(mockPaymentGatewayPort.isPaymentValid(payment)).thenReturn(true);
+        when(mockAccountPort.fetch(accountId)).thenReturn(account);
 
         // when
         serviceUnderTest.validateAndRegisterOnlinePayment(payment);
 
         // then
         assertEquals(paymentCreatedOn, account.getLastPaymentDate());
-        verify(mockAccountRepository).update(account);
-        verify(mockPaymentRepository).save(payment);
-        verify(mockPaymentErrorLogRepository, never()).save(any());
+        verify(mockAccountPort).update(account);
+        verify(mockPaymentPort).save(payment);
+        verify(mockPaymentErrorLogPort, never()).save(any());
     }
 
     @Test
@@ -175,20 +175,20 @@ class RegisterOnlinePaymentServiceTest {
                 .amount(BigDecimal.TEN)
                 .createdOn(paymentCreatedOn)
                 .build();
-        RegisterPaymentService serviceUnderTest = new RegisterPaymentService(mockPaymentRepository, mockAccountRepository,
-                mockPaymentGatewayClient, mockPaymentErrorLogRepository);
+        RegisterPaymentUseCaseHandler serviceUnderTest = new RegisterPaymentUseCaseHandler(mockPaymentPort, mockAccountPort,
+                mockPaymentGatewayPort, mockPaymentErrorLogPort);
 
-        when(mockPaymentRepository.exists(paymentId)).thenReturn(false);
-        when(mockPaymentGatewayClient.isPaymentValid(payment)).thenReturn(true);
-        when(mockAccountRepository.fetch(accountId)).thenThrow(new RuntimeException("Some Error"));
+        when(mockPaymentPort.exists(paymentId)).thenReturn(false);
+        when(mockPaymentGatewayPort.isPaymentValid(payment)).thenReturn(true);
+        when(mockAccountPort.fetch(accountId)).thenThrow(new RuntimeException("Some Error"));
 
         // when
         serviceUnderTest.validateAndRegisterOnlinePayment(payment);
 
         // then
-        verify(mockAccountRepository, never()).update(any());
-        verify(mockPaymentRepository, never()).save(payment);
-        verify(mockPaymentErrorLogRepository).save(PaymentError.builder()
+        verify(mockAccountPort, never()).update(any());
+        verify(mockPaymentPort, never()).save(payment);
+        verify(mockPaymentErrorLogPort).save(PaymentError.builder()
                 .paymentId(paymentId)
                 .error(OTHER)
                 .description("Some Error")

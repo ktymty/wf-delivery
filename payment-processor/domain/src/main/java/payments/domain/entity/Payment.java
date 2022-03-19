@@ -4,9 +4,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import payments.domain.vo.AccountId;
-import payments.domain.vo.PaymentId;
-import payments.domain.vo.PaymentType;
+import payments.domain.model.AccountId;
+import payments.domain.model.PaymentId;
+import payments.domain.model.PaymentType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
