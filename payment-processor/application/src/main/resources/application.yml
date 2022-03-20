@@ -1,0 +1,79 @@
+logging:
+  level:
+    root: ERROR
+    org:
+      hibernate:
+        SQL: ERROR
+        type:
+          descriptor:
+            sql:
+              BasicBinder: ERROR
+server:
+  port: 8081
+spring:
+  application:
+    name: payments
+  sleuth:
+    sampler:
+      rate: 50
+      probability: 1.0
+  zipkin:
+    baseUrl: http://localhost:9411/
+  cloud:
+    stream:
+      function:
+        definition: offlinePayment;onlinePayment
+      kafka:
+        binder:
+          brokers: "localhost:29092"
+          zkNodes: "localhost:2181"
+        bindings:
+          offlinePayment-in-0:
+            consumer:
+              enableDlq: true
+              dlqName: offline.dlq
+          onlinePayment-in-0:
+            consumer:
+              enableDlq: true
+              dlqName: online.dlq
+      bindings:
+        offlinePayment-in-0:
+          destination: offline
+          group: offline-payments-cg
+          consumer:
+            maxAttempts: 4
+            backOffInitialInterval: 500
+            backOffMaxInterval: 10000
+            backOffMultiplier: 2.5
+            defaultRetryable: true
+            retryableExceptions:
+              com:
+                technicaltest:
+                  payments:
+                    domain:
+                      exceptions:
+                        BusinessException: false
+        onlinePayment-in-0:
+          destination: online
+          group: online-payments-cg
+          consumer:
+            maxAttempts: 4
+            backOffInitialInterval: 500
+            backOffMaxInterval: 10000
+            backOffMultiplier: 2.5
+            defaultRetryable: true
+            retryableExceptions:
+              com:
+                technicaltest:
+                  payments:
+                    domain:
+                      exceptions:
+                        BusinessException: false
+  datasource:
+    driver-class-name:
+    username: tech
+    url: jdbc:postgresql://localhost:5432/payments
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
