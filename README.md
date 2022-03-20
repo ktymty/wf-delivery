@@ -69,8 +69,10 @@ Zipkin and SpringSleuth has been chosen as it is open-source, integrate very wel
 ## :pushpin: Things to improve
 
 * Use openapi to generate rest clients.
-* Add integration tests using test containers.
+* Add integration tests using test containers for postgres.
 * Add integration tests for kafka consumers.
-* Add versioning to api.
+* Version api.
+* Configure logging levels for layers.
 * Async communication with log service by using a message broker to decrease coupling and increase availability.
 * Add more partitions to the payment topics to enable the parallel consuming.
+* Consume Dead Letter Queue topics to process errors in payment.

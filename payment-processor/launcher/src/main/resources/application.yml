@@ -1,13 +1,3 @@
-logging:
-  level:
-    root: ERROR
-    org:
-      hibernate:
-        SQL: ERROR
-        type:
-          descriptor:
-            sql:
-              BasicBinder: ERROR
 server:
   port: 8081
 spring:
