@@ -52,7 +52,7 @@ class PaymentGatewayAdapterTest {
     }
 
     @Test
-    @DisplayName("should validate payment and return HttpStatus 200 with valid true.")
+    @DisplayName("should validate payment and respond with valid if HttpStatus is 2xx.")
     void should_validate_payment_and_return_HttpStatus200_with_valid_true() {
         // given
         WebClient webClient = createWebClient();
@@ -83,7 +83,7 @@ class PaymentGatewayAdapterTest {
     }
 
     @Test
-    @DisplayName("should validate payment and return HttpStatus 200 with valid false.")
+    @DisplayName("should validate payment and respond with invalid if HttpStatus is 5xx.")
     void should_validate_payment_and_return_HttpStatus200_with_valid_false() {
         // given
         WebClient webClient = createWebClient();
@@ -114,7 +114,7 @@ class PaymentGatewayAdapterTest {
     }
 
     @Test
-    @DisplayName("should validate payment and respond with HttpStatus 200 but not valid due to timeout.")
+    @DisplayName("should validate payment and respond with invalid even if HttpStatus is 2xx but timeout.")
     void when_validate_payment_if_status_ok_and_timeout_should_return_not_valid() {
         // given
         WebClient webClient = createWebClient();
