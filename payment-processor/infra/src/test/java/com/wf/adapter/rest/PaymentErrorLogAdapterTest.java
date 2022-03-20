@@ -51,13 +51,41 @@ class PaymentErrorLogAdapterTest {
 
     private String resquestBody(PaymentError error) {
         return String.format("{ \"payment_id\": \"%s\", \"error_type\": \"%s\", "
-                        + "\"error_description\": \"%s\"}", error.getPaymentId().getId().toString(),
+                        + "\"error_description\": \"%s\"}", error.getPaymentId().getId(),
                 error.getError(), error.getDescription());
     }
 
     @Test
-    @DisplayName("should ")
-    void when_log_if_service_status_error_should_throw_exception() {
+    @DisplayName("should throw exception when service takes more than timeout to respond")
+    void should_throw_exception_and_log_if_service_takes_more_than_timeout() {
+        // given
+        WebClient webClient = createWebClient();
+        PaymentErrorLogAdapter serviceUnderTest = new PaymentErrorLogAdapter(webClient);
+
+        PaymentId paymentId = new PaymentId(UUID.randomUUID());
+        PaymentError paymentError = PaymentError.builder()
+                .paymentId(paymentId)
+                .error(NETWORK)
+                .description("Error description")
+                .build();
+
+        //when
+        mockServer.when(HttpRequest.request()
+                        .withMethod("POST")
+                        .withPath("/log")
+                        .withBody(resquestBody(paymentError))).
+                respond(HttpResponse.response()
+                        .withStatusCode(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withDelay(TimeUnit.MILLISECONDS, 5000));
+
+        // then
+        assertThrows(LogPaymentErrorException.class, () -> serviceUnderTest.savePaymentError(paymentError));
+    }
+
+    @Test
+    @DisplayName("should throw exception when service responds with 5xx status.")
+    void should_throw_exception_when_service_responds_with_status_5xx() {
         // given
         WebClient webClient = createWebClient();
         PaymentId paymentId = new PaymentId(UUID.randomUUID());
