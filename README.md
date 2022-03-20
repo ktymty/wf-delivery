@@ -2,12 +2,75 @@
 
 ## :computer: How to execute
 
-_Provide a description of how to run/execute your program..._
+### 1. Run infrastructure with docker-compose
+```bash
+docker-compose up -d
+```
+### 2. Run payments spring-boot project
+```bash
+cd payments-processor
+./mvnw -f ./launcher/ spring-boot:run -D "spring-boot.run.arguments=--spring.datasource.password=test"
+```
+### 3. Open Browser and navigate to 
+```text
+http://localhost:9000/start
+```
+
+This will start the server at localhost:9000
+* Logs [Logs](http://localhost:9000/logs)
+* Kafka Magic [Kafka Magic Cluster GUI](http://localhost:8080/)
 
 ## :memo: Notes
 
-_Some notes or explaination of your solution..._
+### Tech Stack
+The service is built using only Java with SpringBoot. Apart from the starter libraries provided by [SpringBoot Initializer](https://start.spring.io/),folowing dependencies have been used:
+* [Lombok](https://projectlombok.org/) - to reduce boilerplate code.
+* [Jakarta Bean Validation API](https://beanvalidation.org/) - to use NotNull for uuid's in model and response.
+* [Zipkin](https://zipkin.io/) - distributed tracing system
+
+I choose Java and SpringBoot due to following reasons:
+#### Pros
+* One of the best combinations in JVM ecosystems.
+* Good support and integration with many technologies.
+* Many developers, easy to maintain and refactor.
+#### Cons
+* Memory consumption is high.
+* Startup times compared to nodejs and golang can be higher.
+
+### Architecture Design
+I choose a hexagonal architecture pattern to implement the solutions based on domain, infra, ports and adapters. The hexagonal architecture focuses on three principles: Explicitly separate user side, business logic, and server side layers.
+it provides a good separation between domain, business logic and adapters.
+<br>
+WebClient from spring reactive has been used to rest communication as it provides of both Sync and Async feature with many benefits. 
+Moreover, going further there will no further development in Spring RestTemplate.
+
+#### Pros
+* Each layer of the application has a strict set of responsibilities and concerns.
+* Test business logic in isolation from external systems.
+* Agnostic to the outside world.
+* Independent of external services due to ports and adapters.
+#### Cons
+* Higher level of complexity compared to DDD model or MVC model.
+* Adapters are traditionally polymorphic (in OO), so polymorphic calls can be harder to understand and debug.
+
+### Observability
+Observability refers to telemetry produced by services. There are three pillars for observability: logs, distributed traces and metrics. 
+In microservices it largely revolves around making sure development teams have access to the data they need to identify problems and detect failures.
+
+Zipkin and SpringSleuth has been chosen as it is open-source, integrate very well and easy to integrate in prototype or small scale microservice applications
+
+### Code Structure
+1. The code is organized into following main packages:
+    - **application**: This module contains interfaces as port. It also contains the two use cases for Online and Offline payment processing.
+    - **domain**: This module contains model, values objects and exception classes.
+    - **infra**: This package contains the adapter for jpa, kafka and rest.
+    - **launcher**: This module contains configuration in application.yml, custom AppConfig and main class to launch application.
 
 ## :pushpin: Things to improve
 
-_If u have more time or want to improve somthing..._
+* Use openapi to generate rest clients.
+* Add integration tests using test containers.
+* Add integration tests for kafka consumers.
+* Add versioning to api.
+* Async communication with log service by using a message broker to decrease coupling and increase availability.
+* Add more partitions to the payment topics to enable the parallel consuming.

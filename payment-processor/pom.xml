@@ -26,6 +26,7 @@
         <module>domain</module>
         <module>application</module>
         <module>infra</module>
+        <module>launcher</module>
     </modules>
 
     <dependencyManagement>
