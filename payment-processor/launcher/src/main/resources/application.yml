@@ -38,10 +38,10 @@ spring:
             defaultRetryable: true
             retryableExceptions:
               com:
-                technicaltest:
+                wf:
                   payments:
                     domain:
-                      exceptions:
+                      exception:
                         BusinessException: false
         onlinePayment-in-0:
           destination: online
@@ -54,16 +54,19 @@ spring:
             defaultRetryable: true
             retryableExceptions:
               com:
-                technicaltest:
+                wf:
                   payments:
                     domain:
-                      exceptions:
+                      exception:
                         BusinessException: false
   datasource:
-    driver-class-name:
+    driver-class-name: org.postgresql.Driver
     username: tech
     url: jdbc:postgresql://localhost:5432/payments
+    testWhileIdle: true
+    validationQuery: SELECT 1
   jpa:
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

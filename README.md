@@ -4,12 +4,13 @@
 
 ### 1. Run infrastructure with docker-compose
 ```bash
-docker-compose up -d
+wf-delivery>  docker-compose up -d
 ```
-### 2. Run payments spring-boot project
+### 2. Download dependencies, run tests, build modules and Run payments spring-boot project
 ```bash
-cd payments-processor
-./mvnw -f ./launcher/ spring-boot:run -D "spring-boot.run.arguments=--spring.datasource.password=test"
+wf-delivery>  cd payments-processor
+wf-delivery/payments-processor> ./mvnw -U clean install
+wf-delivery/payments-processor> ./mvnw -f ./launcher/ spring-boot:run -D "spring-boot.run.arguments=--spring.datasource.password=test"
 ```
 ### 3. Open Browser and navigate to 
 ```text
@@ -17,8 +18,9 @@ http://localhost:9000/start
 ```
 
 This will start the server at localhost:9000
-* Logs [Logs](http://localhost:9000/logs)
-* Kafka Magic [Kafka Magic Cluster GUI](http://localhost:8080/)
+* [Logs](http://localhost:9000/logs) - view logs
+* [Start](http://localhost:9000/start) - reset application
+* [Zipkin](http://localhost:9411/) - for tracing
 
 ## :memo: Notes
 
@@ -64,7 +66,7 @@ Zipkin and SpringSleuth has been chosen as it is open-source, integrate very wel
     - **application**: This module contains interfaces as port. It also contains the two use cases for Online and Offline payment processing.
     - **domain**: This module contains model, values objects and exception classes.
     - **infra**: This package contains the adapter for jpa, kafka and rest.
-    - **launcher**: This module contains configuration in application.yml, custom AppConfig and main class to launch application.
+    - **launcher**: This module contains configurations and main class to launch application.
 
 ## :pushpin: Things to improve
 
@@ -73,6 +75,6 @@ Zipkin and SpringSleuth has been chosen as it is open-source, integrate very wel
 * Add integration tests for kafka consumers.
 * Version api.
 * Configure logging levels for layers.
-* Async communication with log service by using a message broker to decrease coupling and increase availability.
+* Use a message broker for pub-sub communication pattern between microservice and log endpoint.
 * Add more partitions to the payment topics to enable the parallel consuming.
 * Consume Dead Letter Queue topics to process errors in payment.

@@ -5,6 +5,5 @@ import com.wf.payments.domain.vo.AccountId;
 
 public interface AccountPort {
     Account findByAccountId(AccountId accountId);
-
     void updateAccount(Account account);
 }

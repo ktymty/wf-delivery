@@ -20,7 +20,6 @@
         <dependency>
             <groupId>com.wf</groupId>
             <artifactId>application</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

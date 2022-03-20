@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.wf</groupId>
             <artifactId>domain</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

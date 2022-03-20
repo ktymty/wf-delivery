@@ -1,9 +1,6 @@
 package com.wf.payments.application.usecase;
 
-import com.wf.payments.application.port.AccountPort;
-import com.wf.payments.application.port.PaymentErrorLogPort;
-import com.wf.payments.application.port.PaymentGatewayPort;
-import com.wf.payments.application.port.PaymentPort;
+import com.wf.payments.application.port.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +21,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class RegisterPaymentUseCaseHandler implements RegisterPaymentUseCase {
     @NonNull
-    private final PaymentPort paymentPort;
-    @NonNull
     private final AccountPort accountPort;
+    @NonNull
+    private final PaymentPort paymentPort;
     @NonNull
     private final PaymentGatewayPort paymentGatewayPort;
     @NonNull
@@ -42,9 +39,9 @@ public class RegisterPaymentUseCaseHandler implements RegisterPaymentUseCase {
                 log.info("Payment {} already exists", payment.getPaymentId());
             }
         } catch (PaymentException pe) {
-            paymentErrorLogPort.savePaymentError(pe.toError());
+            paymentErrorLogPort.sendErrorToLogSystem(pe.toError());
         } catch (Exception ex) {
-            paymentErrorLogPort.savePaymentError(PaymentError.builder()
+            paymentErrorLogPort.sendErrorToLogSystem(PaymentError.builder()
                     .paymentId(payment.getPaymentId())
                     .error(ErrorType.OTHER)
                     .description(ex.getMessage())
@@ -62,9 +59,9 @@ public class RegisterPaymentUseCaseHandler implements RegisterPaymentUseCase {
                 log.info("Payment {} already exists", payment.getPaymentId());
             }
         } catch (PaymentException pe) {
-            paymentErrorLogPort.savePaymentError(pe.toError());
+            paymentErrorLogPort.sendErrorToLogSystem(pe.toError());
         } catch (Exception ex) {
-            paymentErrorLogPort.savePaymentError(PaymentError.builder()
+            paymentErrorLogPort.sendErrorToLogSystem(PaymentError.builder()
                     .paymentId(payment.getPaymentId())
                     .error(ErrorType.OTHER)
                     .description(ex.getMessage())

@@ -76,18 +76,3 @@ services:
       - kafka-net
     ports:
       - "9411:9411"
-
-  # Kafka Magic is a GUI tool for working with Apache Kafka clusters.
-  # https://www.kafkamagic.com/
-  # GUI at http://localhost:8080
-  magic:
-    image: digitsy/kafka-magic
-    networks:
-      - kafka-net
-    ports:
-      - "8080:80"
-    environment:
-      KMAGIC_ALLOW_TOPIC_DELETE: "true"
-      KMAGIC_ALLOW_SCHEMA_DELETE: "true"
-    depends_on:
-      - kafka-server
