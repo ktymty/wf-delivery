@@ -4,6 +4,9 @@ networks:
   kafka-net:
     driver: bridge
 
+volumes:
+  payments-pgadmin:
+
 services:
   zookeeper-server:
     image: bitnami/zookeeper:latest
@@ -45,6 +48,19 @@ services:
       POSTGRES_USER: tech
       POSTGRES_PASSWORD: test
       POSTGRES_DB: payments
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    networks:
+      - kafka-net
+    ports:
+      - "5051:5050"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 5050
+    volumes:
+      - payments-pgadmin:/var/lib/pgadmin/data
 
   api-producer:
     build: ./ApiAndProducer
